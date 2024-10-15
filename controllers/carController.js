@@ -1,62 +1,65 @@
 const Car = require('../models/Car');
 
-const carController = {
-    createCar: async (req, res) => {
-        try {
-            const { make, model, year, price_per_day, availability, image_url } = req.body;
-            const car = await Car.create({ make, model, year, price_per_day, availability, image_url });
-            res.status(201).json(car);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    },
-    getAllCars: async (req, res) => {
-        try {
-            const cars = await Car.findAll();
-            res.json(cars);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    },
-    getCarById: async (req, res) => {
-        try {
-            const car = await Car.findByPk(req.params.id);
-            if (car) {
-                res.json(car);
-            } else {
-                res.status(404).json({ message: 'Car not found' });
-            }
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    },
-    updateCar: async (req, res) => {
-        try {
-            const car = await Car.findByPk(req.params.id);
-            if (car) {
-                const { make, model, year, price_per_day, availability, image_url } = req.body;
-                await car.update({ make, model, year, price_per_day, availability, image_url });
-                res.json(car);
-            } else {
-                res.status(404).json({ message: 'Car not found' });
-            }
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    },
-    deleteCar: async (req, res) => {
-        try {
-            const car = await Car.findByPk(req.params.id);
-            if (car) {
-                await car.destroy();
-                res.status(204).send();
-            } else {
-                res.status(404).json({ message: 'Car not found' });
-            }
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    },
+// สร้างรถใหม่
+exports.createCar = async (req, res) => {
+    try {
+        const car = await Car.create(req.body);
+        res.status(201).json(car);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-module.exports = carController;
+// ดึงรถทั้งหมด
+exports.getCars = async (req, res) => {
+    try {
+        const cars = await Car.findAll();
+        res.status(200).json(cars);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// ค้นหารถตาม ID
+exports.getCarById = async (req, res) => {
+    try {
+        const car = await Car.findByPk(req.params.id);
+        if (!car) {
+            return res.status(404).json({ message: 'Car not found' });
+        }
+        res.status(200).json(car);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// แก้ไขรถ
+exports.updateCar = async (req, res) => {
+    try {
+        const [updated] = await Car.update(req.body, {
+            where: { car_id: req.params.id },
+        });
+        if (!updated) {
+            return res.status(404).json({ message: 'Car not found' });
+        }
+        const updatedCar = await Car.findByPk(req.params.id);
+        res.status(200).json(updatedCar);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// ลบรถ
+exports.deleteCar = async (req, res) => {
+    try {
+        const deleted = await Car.destroy({
+            where: { car_id: req.params.id },
+        });
+        if (!deleted) {
+            return res.status(404).json({ message: 'Car not found' });
+        }
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

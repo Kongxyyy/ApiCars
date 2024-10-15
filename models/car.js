@@ -4,35 +4,27 @@ const sequelize = require('../config/db');
 const Car = sequelize.define('Car', {
     car_id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true
     },
-    make: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
+    brand: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
     model: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
+        type: DataTypes.STRING,
+        allowNull: false
     },
     year: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: false
     },
     price_per_day: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-    },
-    availability: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-    },
-    image_url: {
-        type: DataTypes.STRING(255),
-    },
+        type: DataTypes.FLOAT,
+        allowNull: false
+    }
 }, {
-    tableName: 'Cars',
-    timestamps: false,
+    timestamps: true
 });
 
 module.exports = Car;

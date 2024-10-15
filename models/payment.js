@@ -1,26 +1,33 @@
-// models/payment.js
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('./user');
-const Rental = require('./rental');
+const sequelize = require('../config/db');
+const Rental = require('./Rental');
 
 const Payment = sequelize.define('Payment', {
+    payment_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     amount: {
         type: DataTypes.FLOAT,
-        allowNull: false,
+        allowNull: false
     },
     payment_date: {
-        type: DataTypes.DATE,
-        allowNull: false,
+        type: DataTypes.DATEONLY,
+        allowNull: false
     },
-    payment_method: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
+    rental_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Rental,
+            key: 'rental_id'
+        }
+    }
 }, {
-    timestamps: true,
+    timestamps: true
 });
 
-// กำหนดความสัมพันธ์
-Payment.belongsTo(Rental, { foreignKey: 'rentalId' });
+Rental.hasMany(Payment, { foreignKey: 'rental_id' });
+Payment.belongsTo(Rental, { foreignKey: 'rental_id' });
 
 module.exports = Payment;

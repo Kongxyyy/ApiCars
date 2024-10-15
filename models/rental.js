@@ -1,43 +1,47 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const User = require('./user');
-const Car = require('./car');
+const User = require('./User');
+const Car = require('./Car');
 
 const Rental = sequelize.define('Rental', {
     rental_id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true
+    },
+    rental_date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    },
+    return_date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    },
+    total_amount: {
+        type: DataTypes.FLOAT,
+        allowNull: false
     },
     user_id: {
         type: DataTypes.INTEGER,
         references: {
             model: User,
-            key: 'user_id',
-        },
+            key: 'user_id'
+        }
     },
     car_id: {
         type: DataTypes.INTEGER,
         references: {
             model: Car,
-            key: 'car_id',
-        },
-    },
-    rental_date: {
-        type: DataTypes.DATE,
-        allowNull: false,
-    },
-    return_date: {
-        type: DataTypes.DATE,
-        allowNull: false,
-    },
-    total_amount: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-    },
+            key: 'car_id'
+        }
+    }
 }, {
-    tableName: 'Rentals',
-    timestamps: false,
+    timestamps: true
 });
+
+User.hasMany(Rental, { foreignKey: 'user_id' });
+Car.hasMany(Rental, { foreignKey: 'car_id' });
+Rental.belongsTo(User, { foreignKey: 'user_id' });
+Rental.belongsTo(Car, { foreignKey: 'car_id' });
 
 module.exports = Rental;
