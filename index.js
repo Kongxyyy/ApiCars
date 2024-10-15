@@ -1,20 +1,20 @@
 const express = require('express');
+const sequelize = require('./config/db');
+const routes = require('./routes/index');
+const User = require('./models/User');
+const Car = require('./models/Car');
+const Rental = require('./models/Rental');
+const Payment = require('./models/Payment');
+
 const app = express();
-const port = 3000;
-
-const userRoutes = require('./routes/userRoutes');
-const carRoutes = require('./routes/carRoutes');
-const rentalRoutes = require('./routes/rentalRoutes');
-const paymentRoutes = require('./routes/paymentRoutes');
-
 app.use(express.json());
+app.use('/api', routes);
 
-// เชื่อมต่อเส้นทาง
-app.use('/api', userRoutes);
-app.use('/api', carRoutes);
-app.use('/api', rentalRoutes);
-app.use('/api', paymentRoutes);
+const PORT = process.env.PORT || 3000;
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+sequelize.sync().then(() => {
+    console.log("Database & tables created!");
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}).catch(error => console.error(error));

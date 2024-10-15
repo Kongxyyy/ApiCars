@@ -1,27 +1,25 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
+const Rental = require('./Rental');
 
 const User = sequelize.define('User', {
-    user_id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
     name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
-    }
-}, {
-    timestamps: true
+        allowNull: false,
+    },
 });
+
+// ความสัมพันธ์: User มี Rental หลายรายการ
+User.hasMany(Rental, { foreignKey: 'userId' });
+Rental.belongsTo(User, { foreignKey: 'userId' });
 
 module.exports = User;
