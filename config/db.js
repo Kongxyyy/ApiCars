@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('database_name', 'username', 'password', {
-    host: 'your_host', // เช่น 'localhost' หรือ 'Dpg-cs72h6ogph6c73fch8p0-a'
+const sequelize = new Sequelize('apicar_2hn6', 'apicar_2hn6_user', '1UlqYtTwGuvVstqRXN09rDipkm64gG0n', {
+    host: 'dpg-cs73dujtq21c73cmk1ig-a', // ชื่อโฮสต์ที่ถูกต้อง
     dialect: 'postgres',
     port: 5432, // พอร์ตที่ฐานข้อมูลใช้
 });
